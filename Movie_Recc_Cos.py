@@ -19,7 +19,7 @@ movie_stats = df.groupby('title').agg({'rating': [np.size, np.mean]})
 min_50=movie_stats['rating']['size'] >= 50
 rating_matrix = ratings.pivot_table(index=['movie_id'],columns=['user_id'],values='rating').reset_index(drop=True)
 rating_matrix.fillna(0,inplace=True)
-movie_similarity = 1 - pairwise_distances( ratings_matrix, metric="cosine" )
+movie_similarity = 1 - pairwise_distances( rating_matrix, metric="cosine" )
 np.fill_diagonal(movie_similarity,0)
 rating_matrix = pd.DataFrame( movie_similarity )
 try:
@@ -27,7 +27,7 @@ try:
     inp = movies[movies['title'] == user_inp].index.tolist()
     inp = inp[0]
 
-    movies['similarity'] = ratings_matrix.iloc[inp]
+    movies['similarity'] = rating_matrix.iloc[inp]
     movies.columns = ['movie_id', 'title', 'release_date', 'similarity']
     print("Recommended movies based on your choice of ", user_inp, ": \n",
           movies.sort_values(["similarity"], ascending=False)[1:10])
